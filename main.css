@@ -1,0 +1,48 @@
+* {
+	box-sizing: border-box;
+	color: #f2efe9;
+}
+
+html,
+body,
+#map {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+body {
+	display: flex;
+	background-color: darkgreen;
+	padding: 1rem;
+	gap: 1rem;
+}
+h1,
+h2,
+p,
+pre {
+	margin: 0;
+	padding: 0;
+}
+
+#map {
+	width: 70%;
+	border-radius: 0.5rem;
+}
+#side-bar {
+	width: 30%;
+}
+#side-bar-content {
+	height: 100%;
+}
+#side-bar-content h1 {
+	text-align: center;
+}
+#side-bar-content h2 {
+	margin: 0.5rem 0;
+}
+#side-bar-content .url {
+	word-break: break-all;
+}
+#side-bar-content .code-block {
+	overflow-x: auto;
+}
