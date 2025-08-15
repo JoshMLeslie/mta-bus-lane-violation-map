@@ -11,9 +11,11 @@ const tiles = new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 let heatLayer;
+let roundingAccuracy;
 const updateMap = async (includeExempt, accuracy) => {
+	roundingAccuracy = roundingAccuracy || accuracy || 4;
 	console.debug('Loading data');
-	const {data, max} = await getData(includeExempt, accuracy);
+	const {data, max} = await getData(includeExempt, roundingAccuracy);
 	console.debug('Data loaded, populating heatmap', {data, max});
 	if (heatLayer) {
 		map.removeLayer(heatLayer);
@@ -23,11 +25,26 @@ const updateMap = async (includeExempt, accuracy) => {
 	});
 	map.addLayer(heatLayer);
 	console.debug('Heatmap populated');
-}
+};
 
+// init map
 updateMap();
 
+// bind elements
 const rangeInput = document.querySelector('.input-range');
-rangeInput?.addEventListener('change', ({target: {value}}) => {
-	updateMap(false, value)
-});
+if (rangeInput) {
+	rangeInput.addEventListener('change', ({target: {value}}) => {
+		updateMap(false, value);
+	});
+} else {
+	console.warn('Range input not found');
+}
+
+const exemptCheckbox = document.querySelector('#exempt-checkbox');
+if (exemptCheckbox) {
+	exemptCheckbox.addEventListener('change', ({target: {checked}}) => {
+		updateMap(checked);
+	});
+} else {
+	console.warn('Exempt checkbox not found');
+}
