@@ -5,7 +5,7 @@
 
 html,
 body,
-#map {
+#map-super {
 	height: 100%;
 	margin: 0;
 	padding: 0;
@@ -24,28 +24,31 @@ pre {
 	padding: 0;
 }
 
-#inputs {
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-
-.input-range {
-	width: fit-content;
-}
-.input-range datalist {
-	display: flex;
-	justify-content: space-between;
-	padding: 0 6px;
-}
-.input-range option {
-	padding: 0;
-}
-
-#map {
+#map-super {
 	width: 70%;
 	border-radius: 0.5rem;
+	position: relative;
+	overflow: hidden;
 }
+#map {
+	height: 100%;
+}
+#loading-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.5);
+	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#loading-screen.hide {
+	display: none;
+}
+
 #side-bar {
 	width: 30%;
 }
@@ -63,4 +66,22 @@ pre {
 }
 #side-bar-content .code-block {
 	overflow-x: auto;
+}
+
+#inputs {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.input-range {
+	width: fit-content;
+}
+.input-range datalist {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 6px;
+}
+.input-range option {
+	padding: 0;
 }

@@ -2,28 +2,38 @@ import { Map, TileLayer } from 'leaflet';
 import { getData } from './fetch-data.js';
 import { HeatLayer } from './heatmap.js';
 
-const map = new Map('map').setView([40.70860217889356, -73.89177289812899], 11);
+const loadingScreen = document.querySelector('#loading-screen');
+
+const mapObject = new Map('map').setView(
+	[40.70860217889356, -73.89177289812899],
+	11
+);
 
 const tiles = new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution:
 		'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-}).addTo(map);
+}).addTo(mapObject);
 
 let heatLayer;
 let roundingAccuracy;
 const updateMap = async (includeExempt, accuracy) => {
-	roundingAccuracy = roundingAccuracy || accuracy || 4;
 	console.debug('Loading data');
+	loadingScreen.classList.remove("hide")
+
+	roundingAccuracy = roundingAccuracy || accuracy || 4;
 	const {data, max} = await getData(includeExempt, roundingAccuracy);
-	console.debug('Data loaded, populating heatmap', {data, max});
+	
 	if (heatLayer) {
-		map.removeLayer(heatLayer);
+		mapObject.removeLayer(heatLayer);
 	}
+	console.debug('Data loaded, populating heatmap', {data, max});
 	heatLayer = new HeatLayer(data, {
 		max,
 	});
-	map.addLayer(heatLayer);
+
+	mapObject.addLayer(heatLayer);
+	loadingScreen.classList.add("hide")
 	console.debug('Heatmap populated');
 };
 
