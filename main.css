@@ -24,6 +24,18 @@ pre {
 	padding: 0;
 }
 
+div.input-range {
+	width: fit-content;
+}
+div.input-range datalist {
+	display: flex;
+	justify-content: space-between;
+	padding: 0 6px;
+}
+div.input-range option {
+	padding: 0;
+}
+
 #map {
 	width: 70%;
 	border-radius: 0.5rem;

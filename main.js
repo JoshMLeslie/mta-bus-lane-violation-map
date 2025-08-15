@@ -10,11 +10,24 @@ const tiles = new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
-console.debug('Loading data');
-const {data, max} = await getData();
-console.debug('Data loaded, populating heatmap', {data, max});
-const heatLayer = new HeatLayer(data, {
-	max,
+let heatLayer;
+const updateMap = async (includeExempt, accuracy) => {
+	console.debug('Loading data');
+	const {data, max} = await getData(includeExempt, accuracy);
+	console.debug('Data loaded, populating heatmap', {data, max});
+	if (heatLayer) {
+		map.removeLayer(heatLayer);
+	}
+	heatLayer = new HeatLayer(data, {
+		max,
+	});
+	map.addLayer(heatLayer);
+	console.debug('Heatmap populated');
+}
+
+updateMap();
+
+const rangeInput = document.querySelector('.input-range');
+rangeInput?.addEventListener('change', ({target: {value}}) => {
+	updateMap(false, value)
 });
-heatLayer.addTo(map);
-console.debug('Heatmap populated');

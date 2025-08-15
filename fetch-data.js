@@ -3,22 +3,20 @@ const dateString = (dateMs) => new Date(dateMs).toISOString().split('T')[0];
 
 // lat / lng rounded to improve heatmap grouping. Original data has 14 decimals.
 // 3: ~110 meters / 330 feet; 4: ~11m/33ft; 5: ~1m / 3.3ft
-const ROUND_ACCURACY = 4;
-
-const SoQLQuery = (includeExempt = false) => {
+const constructSoQLQuery = (includeExempt = false, accuracy = 4) => {
 	const thirtyDaysAgo = dateString(Date.now() - thirtyDaysMs);
 
 	return `
 	SELECT
-		ROUND(violation_latitude, ${ROUND_ACCURACY}) AS lat,
-		ROUND(violation_longitude, ${ROUND_ACCURACY}) AS lng, 
+		ROUND(violation_latitude, ${accuracy}) AS lat,
+		ROUND(violation_longitude, ${accuracy}) AS lng, 
 		count(*) AS violation_count
 	WHERE
 		first_occurrence >= '${thirtyDaysAgo}'
 		${includeExempt ? '' : `AND NOT starts_with(violation_status, "EXEMPT")`}
 	GROUP BY 
-		ROUND(violation_latitude, ${ROUND_ACCURACY}),
-		ROUND(violation_longitude, ${ROUND_ACCURACY})
+		ROUND(violation_latitude, ${accuracy}),
+		ROUND(violation_longitude, ${accuracy})
 	`;
 };
 
@@ -27,9 +25,9 @@ const SoQLQuery = (includeExempt = false) => {
  * @param {boolean} includeExempt
  * @returns {{lat: string; lng: string; violation_count: string}}
  */
-const url = (includeExempt = false) =>
+const constructUrl = (includeExempt, accuracy) =>
 	`https://data.ny.gov/resource/kh8p-hcbm.json?$query=${encodeURIComponent(
-		SoQLQuery(includeExempt)
+		constructSoQLQuery(includeExempt, accuracy)
 	)}`;
 
 // calculate max since the SoQL MTA engine doesn't want to
@@ -54,9 +52,9 @@ const mapToHeatMap = (violation_data) => {
 	});
 };
 
-export const getData = async (includeExempt = false) => {
+export const getData = async (includeExempt, accuracy) => {
 	try {
-		const res = await fetch(url(includeExempt));
+		const res = await fetch(constructUrl(includeExempt, accuracy));
 		if (!res.ok) {
 			throw new Error(`HTTP ${res.status}`);
 		}
