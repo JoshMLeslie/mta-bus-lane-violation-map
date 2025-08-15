@@ -28,7 +28,8 @@
 				<h1>Bus Lane Violations</h1>
 				<p>
 					Heat map of most recent aggregated bus lane violations (up to 1000),
-					within the last month grouped by lat, lng
+					within the last month grouped by lat, lng from automated bus-mounted
+					cameras
 				</p>
 				<h2>Inputs</h2>
 				<div id="inputs">
@@ -59,20 +60,26 @@
 				</div>
 				<h2>Source Data</h2>
 				<p class="url">
-					https://data.ny.gov/Transportation/MTA-Bus-Automated-Camera-Enforcement-Violations-Be/kh8p-hcbm/about_data
+					<a
+						target="_blank"
+						rel="noopener"
+						href="https://data.ny.gov/Transportation/MTA-Bus-Automated-Camera-Enforcement-Violations-Be/kh8p-hcbm/about_data"
+					>
+						https://data.ny.gov/Transportation/MTA-Bus-Automated-Camera-Enforcement-Violations-Be/kh8p-hcbm/about_data
+					</a>
 				</p>
 				<h2>Query</h2>
 				<pre class="code-block">
 SELECT
-  ROUND(violation_latitude, ${ROUND_ACCURACY}) AS lat,
-  ROUND(violation_longitude, ${ROUND_ACCURACY}) AS lng, 
+  ROUND(violation_latitude, ${accuracy}) AS lat,
+  ROUND(violation_longitude, ${accuracy}) AS lng, 
   count(*) AS violation_count
 WHERE
   first_occurrence >= '${thirtyDaysAgo}'
   ${includeExempt ? '' : `AND NOT starts_with(violation_status, "EXEMPT")`}
 GROUP BY 
-  ROUND(violation_latitude, ${ROUND_ACCURACY}),
-  ROUND(violation_longitude, ${ROUND_ACCURACY})
+  ROUND(violation_latitude, ${accuracy}),
+  ROUND(violation_longitude, ${accuracy})
 				</pre
 				>
 			</div>
