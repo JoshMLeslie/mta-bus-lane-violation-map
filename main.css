@@ -24,15 +24,21 @@ pre {
 	padding: 0;
 }
 
-div.input-range {
+#inputs {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.input-range {
 	width: fit-content;
 }
-div.input-range datalist {
+.input-range datalist {
 	display: flex;
 	justify-content: space-between;
 	padding: 0 6px;
 }
-div.input-range option {
+.input-range option {
 	padding: 0;
 }
 
@@ -50,7 +56,7 @@ div.input-range option {
 	text-align: center;
 }
 #side-bar-content h2 {
-	margin: 0.5rem 0;
+	margin: 1rem 0 0.5rem 0;
 }
 #side-bar-content .url {
 	word-break: break-all;
