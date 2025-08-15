@@ -1,5 +1,5 @@
 import { Map, TileLayer } from 'leaflet';
-import { getData } from './data-url.js';
+import { getData } from './fetch-data.js';
 import { HeatLayer } from './heatmap.js';
 
 const map = new Map('map').setView([40.70860217889356, -73.89177289812899], 11);
