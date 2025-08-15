@@ -3,6 +3,8 @@ import { getData } from './fetch-data.js';
 import { HeatLayer } from './heatmap.js';
 
 const loadingScreen = document.querySelector('#loading-screen');
+const rangeInput = document.querySelector('.input-range input');
+const exemptCheckbox = document.querySelector('#exempt-checkbox');
 
 const mapObject = new Map('map').setView(
 	[40.70860217889356, -73.89177289812899],
@@ -15,11 +17,26 @@ const tiles = new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(mapObject);
 
+/**
+ * @param {boolean} state 
+ */
+const setLoading = (state) => {
+	if (state) {
+		loadingScreen.classList.remove("hide")
+		rangeInput.setAttribute("disabled", true)
+		exemptCheckbox.setAttribute("disabled", true)
+	} else {
+		loadingScreen.classList.add("hide")
+		rangeInput.removeAttribute("disabled")
+		exemptCheckbox.removeAttribute("disabled")
+	}
+}
+
 let heatLayer;
 let roundingAccuracy;
 const updateMap = async (includeExempt, accuracy) => {
+	setLoading(true);
 	console.debug('Loading data');
-	loadingScreen.classList.remove("hide")
 
 	roundingAccuracy = roundingAccuracy || accuracy || 4;
 	const {data, max} = await getData(includeExempt, roundingAccuracy);
@@ -33,7 +50,7 @@ const updateMap = async (includeExempt, accuracy) => {
 	});
 
 	mapObject.addLayer(heatLayer);
-	loadingScreen.classList.add("hide")
+	setLoading(false);
 	console.debug('Heatmap populated');
 };
 
@@ -41,7 +58,6 @@ const updateMap = async (includeExempt, accuracy) => {
 updateMap();
 
 // bind elements
-const rangeInput = document.querySelector('.input-range');
 if (rangeInput) {
 	rangeInput.addEventListener('change', ({target: {value}}) => {
 		updateMap(false, value);
@@ -50,7 +66,6 @@ if (rangeInput) {
 	console.warn('Range input not found');
 }
 
-const exemptCheckbox = document.querySelector('#exempt-checkbox');
 if (exemptCheckbox) {
 	exemptCheckbox.addEventListener('change', ({target: {checked}}) => {
 		updateMap(checked);
